@@ -1,0 +1,289 @@
+import React, { useEffect, useState, useRef } from "react";
+import styled from "styled-components";
+import { CommunityWrap } from "./Community";
+import NavigationBar from "../../addition/navigation-bar";
+import Descript from "../../addition/Descript";
+import MainForm from "./MainForm";
+import moment from "moment";
+import "moment/locale/ko";
+import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
+import axios from "axios";
+import recommend from "../../img/recommend.png"
+const CommunityContentBox = styled.div`
+  width: 100%;
+  text-align: left;
+
+  .detail {
+    background: #fff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  }
+  
+  .detail_header {
+    padding-left: 24px;
+    padding-right: 24px;
+    padding: 24px 16px;
+    border-bottom: 1px solid #ebeef1;
+  }
+
+  .detail_title {
+    text-align: left;
+    line-height: 36px;
+    font-size: 24px;
+    /* color: #1e2022; */
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: auto;
+  }
+
+  .detail_sub {
+    margin-top: 9px;
+    line-height: 30px;
+    font-size: 14px;
+    color: #7b858e;
+  }
+
+  .detail_list {
+    float: left;
+    margin-top: 0;
+  }
+
+  .detail_content {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    margin-left: 8px;
+    padding-left: 9px;
+  }
+
+  .detail_list_right {
+    float: right;
+  }
+  
+  .detail_content_container {
+    padding-right: 24px;
+    padding-left: 24px;
+    padding: 24px 16px;
+  }
+
+  .detail_content_size p {
+    margin: 10px 0;
+    color: #555;
+  }
+
+  .recommend_box {
+    border-top: 1px solid #ebeef1;
+    border-bottom: 1px solid #ebeef1;
+    text-align: center;
+  }
+
+  .recommend_btn {
+    border-radius: 4px;
+    background-color: #fff;
+    border: 1px solid #dddfe4;
+
+    width: 88px;
+    line-height: 17px;
+    font-size: 14px;
+    height: 43px;
+
+    color: #1e2022;
+  }
+
+  /*화살표 이미지*/
+
+  .recommend_arrow {
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: 16px;
+    line-height: 999px;
+    vertical-align: top;
+    overflow: hidden;
+    display: inline-block;
+    margin-top: 1px;
+    transition: all 0.5s;
+  }
+
+  /*추천 숫자*/
+
+  .recommend_count {
+    transition: all 0.3s;
+    display: inline-block;
+  }
+
+  .recommend_container {
+    padding: 12px 0;
+  }
+  
+  .delete_modify_btn {
+    margin-top: 0px;
+  }
+
+  .delete_modify_btn_lo:first-child {
+    margin-left: 1%;
+  }
+
+  .delete_modify_btn_lo {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  button,
+  input {
+    margin: 0;
+    font-size: 14px;
+    outline: 0;
+    border: 1px solid #dddfe4;
+    border-radius: 4px;
+  }
+
+  .delete_btn {
+    line-height: 15px;
+    font-size: 12px;
+    padding: 8px 15px 7px;
+    border-color: #f95b54;
+    background: #fff;
+    color: #f95b54;
+    margin-right: 5px;
+  }
+
+  .modify_btn {
+    border: 1px solid #dddfe4;
+
+    border-radius: 4px;
+    line-height: 15px;
+    font-size: 12px;
+    padding: 10px 15px 7px;
+    color: black;
+    box-sizing: border-box;
+  }
+`;
+
+const CommunityDetail = ({ match, history }) => {
+  const id = match.params;
+  const pno = id.pno;
+  console.log(pno);
+  const [resp, setResp] = useState({});
+  const [postinfo, setPostInfo] = useState(0);
+
+  const user= localStorage.getItem("info");
+  const info = JSON.parse(user);
+  const storageinfo = (info !== null) ? (info[2]) : (null);
+
+  useEffect(() => {
+    const enterPage = async () => {
+      moment.locale("ko");
+
+      await axios
+        .get("/board/"+pno)
+        .then((response) => {
+          setResp(response.data);
+          setPostInfo(response.data.writer);
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log("에러", error);
+        });
+    };
+    enterPage();
+  }, []);
+
+  console.log(resp);
+  return (
+    <div>
+      <CommunityWrap>
+        <NavigationBar />
+        <div className="communityDetail_conatiner">
+          <MainForm />
+          <CommunityContentBox>
+            <div key={resp.pno}>
+              <div className="detail">
+                <div className="detail_header">
+                  <div className="detail_title">
+                    {resp.title}
+                  </div>
+                  <div className="detail_sub">
+                    <div className="detail_list">
+                      <div className="detail_content">
+                              <span>
+                                {moment(resp.regDate)
+                                    .startOf("second")
+                                    .fromNow()}
+                              </span>
+                      </div>
+                      <div className="detail_content">
+                        {resp.writer}
+                      </div>
+                    </div>
+                    <div className="detail_list detail_list_right">
+                      <div className="detail_content">
+                        <span>조회 {resp.data}</span>
+                      </div>
+                      <div className="detail_content">
+                        <span>댓글 {resp.data}</span>
+                      </div>
+                      <div className="detail_content">
+                        <span>추천 {resp.data}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {postinfo === storageinfo && (
+                      <div className="delete_modify_btn">
+                        <div className="delete_modify_btn_lo">
+                          <button
+                              className="delete_btn"
+                          >
+                            삭제
+                          </button>
+                        </div>
+                        <div className="delete_modify_btn_lo">
+                          <Link
+                              to={{
+                                pathname: "/edit",
+                                state: {
+                                  postId: resp.pno,
+                                  title: resp.title,
+                                  content: resp.content,
+                                },
+                              }}
+                              className="modify_btn"
+                          >
+                            수정
+                          </Link>
+                        </div>
+                      </div>
+                  )}
+                </div>
+                <div>
+                  <div className="detail_content_container">
+                    <p>{resp.content}</p>
+                  </div>
+                </div>
+                <div className="recommend_box">
+                  <div className="recommend_container">
+                    <button
+                        style={{ cursor: "pointer" }}
+                        type="submit"
+                        className="recommend_btn"
+                    >
+                      <img src={recommend} className="recommend_arrow"/>
+                      <span className="recommend_count">
+                              {resp.data}
+                            </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <Descript />
+          </CommunityContentBox>
+        </div>
+      </CommunityWrap>
+    </div>
+  );
+};
+
+export default withRouter(CommunityDetail);

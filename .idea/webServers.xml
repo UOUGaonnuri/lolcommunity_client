@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="ac03581e-a13d-4cdc-ac0e-76a0abfc8c21" name="log-gg" url="http://34.60.50.137">
+        <fileTransfer accessType="SFTP" host="34.64.50.137" port="22" sshConfigId="e63bfacd-771a-4d01-8923-050d5d753b7d" sshConfig="kjuk0521@34.64.50.137:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" connectionConfig="{&quot;serverAliveInterval&quot;:300}" host="localhost" id="7213ff47-fea7-4662-bd7f-900db1a2268e" port="22" customName="log-gg" nameFormat="CUSTOM" useOpenSSHConfig="true">
+        <option name="customName" value="log-gg" />
+      </sshConfig>
+      <sshConfig host="34.64.50.137" id="e63bfacd-771a-4d01-8923-050d5d753b7d" keyPath="C:\Users\WO_0LND\Desktop\gcp_rsa_4096\gcp_rsa_4096" port="22" nameFormat="DESCRIPTIVE" username="kjuk0521" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>
