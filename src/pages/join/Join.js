@@ -1,153 +1,49 @@
 import React, {useState} from "react";
 import "./join.css";
-import axios from "axios";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
 import lol from "../../img/lol.png";
-
+import {useDispatch} from "react-redux";
+import {registerUser} from "../../_actions/userAction";
 
 const Join = ({history}) => {
 
-    const [chk, setChk] = useState({
-        email: "",
-    });
+    const [Email, setEmail] = useState("");
+    const [Password, setPassword] = useState("");
+    const [NickName, setNickName] = useState("");
+    const dispatch = useDispatch();
 
-    const [chk_1, setChk_1]=useState({
-        nickname: "",
-    });
-    const [emailMessage, setEmailMessage] = React.useState("");
-    const [pwMessage, setPwMessage] = React.useState("");
-    const [nickMessage, setNickMessage] = React.useState("");
+    const onEmailHandler = (e) => {
+        setEmail(e.currentTarget.value);
+    };
 
-    const [form, setForm] = useState({
-        email: "",
-        password: "",
-        nickname: "",
-    });
+    const onNickNameHandler = (e) => {
+        setNickName(e.currentTarget.value);
+    };
+
+    const onPasswordHanlder = (e) => {
+        setPassword(e.currentTarget.value);
+    };
+
+    const onSubmitHandler = (e) => {
+        e.preventDefault();
+        if (Password) {
+            let body = {
+                email: Email,
+                password: Password,
+                nickname: NickName,
+            };
+            dispatch(registerUser(body)).then((res) => {
+                alert("가입이 정상적으로 완료되었습니다");
+                history.push("/login");
+            });
+        } else {
+            alert("비밀번호가 일치하지 않습니다");
+        }
+    };
 
     const cancelHome = () => {
         history.push("/login");
-    };
-
-    const handleOnChange_email = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value,
-        });
-        setChk({
-            ...chk,
-            [e.target.name]: e.target.value,
-        });
-
-        const emailRegExp =
-            /^[A-Za-z0-9_]+[A-Za-z0-9]*[@]{1}[A-Za-z0-9]+[A-Za-z0-9]*[.]{1}[A-Za-z]{1,3}$/;
-
-        if (!emailRegExp.test(e.target.value)) {
-            setEmailMessage("이메일의 형식이 올바르지 않습니다!");
-        }else{
-            setEmailMessage("");
-        }
-    };
-
-    const handleOnChange_pw = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value,
-        });
-
-        const passwordRegExp =
-            /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
-        if (!passwordRegExp.test(e.target.value)) {
-            setPwMessage(
-                "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요!"
-            );
-        } else {
-            setPwMessage("");
-        }
-    };
-
-    const handleOnChange_nick = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value,
-        });
-        setChk_1({
-            ...chk_1,
-            [e.target.name]: e.target.value,
-        });
-
-        if (e.target.value.length > 8) {
-            setNickMessage("닉네임은 8글자 이하로 입력해주세요!");
-        }else{
-            setNickMessage("");
-        }
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(form);
-        axios.post(
-            "/users/register",
-            form,
-            {
-                headers: {
-                    // Accept: 'application/json',
-                    "Content-Type": "application/json",
-                },
-            }
-        )
-            .then((response) => {
-                alert("회원가입이 완료되었습니다.");
-                history.push("/login");
-            })
-            .catch((error) => {
-                console.log(error.response);
-                alert("회원가입에 실패하셨습니다.");
-            });
-    };
-
-    const handleSubmit_email = (e) => {
-        e.preventDefault();
-        console.log(chk);
-        axios.post(
-            "/users/check/email",
-            chk,
-            {
-                headers: {
-                    // Accept: 'application/json',
-                    "Content-Type": "application/json",
-                },
-            }
-        )
-            .then((response) => {
-                alert("사용 가능한 이메일 입니다.");
-            })
-            .catch((error) => {
-                console.log(error.response);
-                alert("사용 중인 이메일 입니다.");
-            });
-    };
-
-    const handleSubmit_nick = (e) => {
-        e.preventDefault();
-        console.log(chk_1);
-        axios.post(
-            "/users/check/nickname",
-            chk_1,
-            {
-                headers: {
-                    // Accept: 'application/json',
-                    "Content-Type": "application/json",
-                },
-            }
-        )
-            .then((response) => {
-                alert("사용 가능한 닉네임 입니다.");
-            })
-            .catch((error) => {
-                console.log(error.response);
-                alert("사용 중인 닉네임 입니다.");
-            });
     };
 
     return (
@@ -164,11 +60,11 @@ const Join = ({history}) => {
                         회원가입을 위해 이메일 주소를 기입해주시길 바랍니다.
                     </div>
                     <div>
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={onSubmitHandler}>
                             <div>
                                 <div className="join_input_chk">
                                     <input
-                                        onChange={handleOnChange_email}
+                                        onChange={onEmailHandler}
                                         className="join_input_box_chk"
                                         type="text"
                                         autoComplete="off"
@@ -176,15 +72,15 @@ const Join = ({history}) => {
                                         placeholder="이메일 주소"
                                     />
                                 </div>
-                                <button type="submit" onClick={handleSubmit_email} className="check_btn">
+                                <button type="submit" className="check_btn">
                                     중복확인
                                 </button>
-                                <p className="message">{emailMessage}</p>
+                                <p className="message"></p>
                             </div>
                             <div>
                                 <div className="join_input">
                                     <input
-                                        onChange={handleOnChange_pw}
+                                        onChange={onPasswordHanlder}
                                         className="join_input_box"
                                         type="password"
                                         autoComplete="off"
@@ -192,12 +88,12 @@ const Join = ({history}) => {
                                         placeholder="비밀번호"
                                     />
                                 </div>
-                                <p className="message">{pwMessage}</p>
+                                <p className="message"></p>
                             </div>
                             <div>
                                 <div className="join_input_chk">
                                     <input
-                                        onChange={handleOnChange_nick}
+                                        onChange={onNickNameHandler}
                                         className="join_input_box_chk"
                                         type="text"
                                         autoComplete="off"
@@ -205,10 +101,10 @@ const Join = ({history}) => {
                                         placeholder="닉네임"
                                     />
                                 </div>
-                                <button type="submit" onClick={handleSubmit_nick} className="check_btn">
+                                <button type="submit" className="check_btn">
                                     중복확인
                                 </button>
-                                <p className="message">{nickMessage}</p>
+                                <p className="message"></p>
                             </div>
                             <div>
                                 <button
