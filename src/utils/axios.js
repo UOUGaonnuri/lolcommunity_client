@@ -7,6 +7,6 @@ export const request = (method, url, data) => {
         url: url,
         data,
     })
-        .then((res) => res.data)
-        .catch((err)=>console.log(err));
+        .then((res) => res)
+        .catch((err)=>err);
 };
