@@ -3,48 +3,45 @@ import "./FindPw.css";
 import axios from "axios";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {findPw} from "../../_actions/userAction";
 import lol from "../../img/lol.png";
 
 
 const FindPw = ({history}) => {
 
-    const [form, setForm] = useState({
-        email: "",
-        nickname: "",
-    });
+    const [Email, setEmail] = useState("");
+    const [NickName, setNickName] = useState("");
+    const dispatch = useDispatch();
+
+    const onEmailHandler = (e) => {
+        setEmail(e.currentTarget.value);
+    };
+
+    const onNickNameHandler = (e) => {
+        setNickName(e.currentTarget.value);
+    };
 
     const cancelHome = () => {
         history.push("/login");
     };
 
-    const handleOnChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value,
-        });
-    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(form);
-        axios.post(
-            "/users/findpw",
-            form,
-            {
-                headers: {
-                    // Accept: 'application/json',
-                    "Content-Type": "application/json",
-                },
-            }
-        )
-            .then((response) => {
-                alert("임시 비밀번호를 보내드렸습니다.");
-                history.push("/login");
-            })
-            .catch((error) => {
-                console.log(error.response);
-                alert("일치하는 회원정보가 없습니다.");
-            });
+        let body = {
+            email: Email,
+            nickname: NickName,
+        }
+        dispatch(findPw(body))
+            .then((res) => {
+                if(res.payload.status === 200){
+                    alert("임시 비밀번호를 해당 이메일로 전송하였습니다.");
+                    history.push("/login");
+                }else {
+                    alert("유저 정보가 올바르지 않습니다.");
+                }
+        })
     };
 
     return (
@@ -64,7 +61,7 @@ const FindPw = ({history}) => {
                         <form onSubmit={handleSubmit}>
                             <div className="find_input">
                                 <input
-                                    onChange={handleOnChange}
+                                    onChange={onEmailHandler}
                                     className="find_input_box"
                                     type="text"
                                     autoComplete="off"
@@ -74,7 +71,7 @@ const FindPw = ({history}) => {
                             </div>
                             <div className="find_input">
                                 <input
-                                    onChange={handleOnChange}
+                                    onChange={onNickNameHandler}
                                     className="find_input_box"
                                     type="text"
                                     autoComplete="off"

@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
 import lol from "../../img/lol.png";
 import {useDispatch} from "react-redux";
-import {registerUser} from "../../_actions/userAction";
+import {registerUser, checkEmail, checkNick} from "../../_actions/userAction";
 
 const Join = ({history}) => {
 
@@ -21,30 +21,81 @@ const Join = ({history}) => {
         setNickName(e.currentTarget.value);
     };
 
-    const onPasswordHanlder = (e) => {
+    const onPasswordHandler = (e) => {
         setPassword(e.currentTarget.value);
     };
 
+    const onChkEmailHandler = (e) => {
+        e.preventDefault();
+        let body = {
+            email: Email
+        }
+        dispatch(checkEmail(body))
+            .then((res) => {
+                if(res.payload.status === 200){
+                    alert("사용 가능한 이메일 입니다..");
+                }else {
+                    alert("사용 중인 이메일 입니다.");
+                }
+            })
+    }
+
+    const onChkNickHandler = (e) => {
+        e.preventDefault();
+        let body = {
+            nickname: NickName
+        }
+        dispatch(checkNick(body))
+            .then((res) => {
+                if(res.payload.status === 200){
+                    alert("사용 가능한 닉네임 입니다..");
+                }else {
+                    alert("사용 중인 닉네임 입니다.");
+                }})
+    }
+
     const onSubmitHandler = (e) => {
         e.preventDefault();
-        if (Password) {
-            let body = {
-                email: Email,
-                password: Password,
-                nickname: NickName,
-            };
-            dispatch(registerUser(body)).then((res) => {
-                alert("가입이 정상적으로 완료되었습니다");
-                history.push("/login");
-            });
-        } else {
-            alert("비밀번호가 일치하지 않습니다");
-        }
+        let body = {
+            email: Email,
+            password: Password,
+            nickname: NickName,
+        };
+
+        dispatch(registerUser(body))
+            .then((res) => {
+
+                if(res.payload.status === 200){
+                    alert("가입에 성공하였습니다.");
+                    history.push("/login");
+                }else {
+                    alert("가입에 실패하였습니다.");
+                }
+        })
     };
 
     const cancelHome = () => {
         history.push("/login");
     };
+
+    const chkRegex = () => {
+        const emailRegex =
+            /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/
+        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/
+
+        if (!emailRegex.test(Email)){
+            alert("이메일 형식이 올바르지 않습니다.");
+            setEmail("");
+        }
+        if(!passwordRegex.test(Password)){
+            alert("비밀번호 형식에 올바르지 않습니다.");
+            setPassword("");
+        }
+        if(NickName.length < 2 || NickName.length > 8){
+            alert("닉네임 형식에 올바르지 않습니다.")
+            setNickName("");
+        }
+    }
 
     return (
         <div className="join_container">
@@ -58,6 +109,12 @@ const Join = ({history}) => {
                     <h2 className="top_text">기본정보 입력</h2>
                     <div className="top_sub">
                         회원가입을 위해 이메일 주소를 기입해주시길 바랍니다.
+                        <br/>
+                        이메일 형식: test@test.com
+                        <br/>
+                        비밀번호 형식: 숫자+영문자+특수문자 조합으로 8자리 이상
+                        <br/>
+                        닉네임 형식: 2자리 이상 8자리 이하
                     </div>
                     <div>
                         <form onSubmit={onSubmitHandler}>
@@ -72,7 +129,7 @@ const Join = ({history}) => {
                                         placeholder="이메일 주소"
                                     />
                                 </div>
-                                <button type="submit" className="check_btn">
+                                <button type="submit" onClick={onChkEmailHandler} className="check_btn">
                                     중복확인
                                 </button>
                                 <p className="message"></p>
@@ -80,7 +137,7 @@ const Join = ({history}) => {
                             <div>
                                 <div className="join_input">
                                     <input
-                                        onChange={onPasswordHanlder}
+                                        onChange={onPasswordHandler}
                                         className="join_input_box"
                                         type="password"
                                         autoComplete="off"
@@ -101,7 +158,7 @@ const Join = ({history}) => {
                                         placeholder="닉네임"
                                     />
                                 </div>
-                                <button type="submit" className="check_btn">
+                                <button type="submit" onClick={onChkNickHandler} className="check_btn">
                                     중복확인
                                 </button>
                                 <p className="message"></p>
@@ -114,7 +171,7 @@ const Join = ({history}) => {
                                 >
                                     취소
                                 </button>
-                                <button type="submit" className="sumbit_btn">
+                                <button type="submit" onClick={chkRegex} className="sumbit_btn">
                                     가입하기
                                 </button>
                             </div>
