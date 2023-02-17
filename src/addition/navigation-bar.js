@@ -6,20 +6,20 @@ const NavigationBar = ({ history }) => {
   const logout = () => {
     if (window.confirm("로그아웃 하시겠습니까?") === true) {
       localStorage.clear();
-      console.log(localStorage.getItem("info"));
+      console.log(localStorage.getItem("jwtToken"));
     } else {
       return;
     }
   };
 
-  const authCheck = localStorage.getItem("info") ? (
+  const authCheck = localStorage.getItem("jwtToken") ? (
       <Link to="/#" onClick={logout}>
         로그아웃
       </Link>
   ) : (
     <Link to="/login">로그인</Link>
   );
-  const authModify = localStorage.getItem("info") ? (
+  const authModify = localStorage.getItem("jwtToken") ? (
       <Link to="/auth">
         회원수정
       </Link>
