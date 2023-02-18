@@ -7,7 +7,8 @@ import styled from "styled-components";
 import { Link, withRouter } from "react-router-dom";
 import MainForm from "./MainForm";
 import moment from "moment";
-import axios from "axios";
+import {useDispatch} from "react-redux";
+import {board} from "../../_actions/userAction";
 import "moment/locale/ko";
 
 
@@ -166,36 +167,22 @@ const ContentBox = styled.div`
 `;
 
 const Community = ({history }) => {
-
+  const dispatch = useDispatch();
   moment.locale("ko");
 
   const [communityDtos, setCommunityDtos] = useState([]);
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
-    axios
-      .get("/board/")
-      .then((response) => {
-        setCommunityDtos(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    dispatch(board()).then((res) => {
+      if (res.payload.status === 200) {
+        setCommunityDtos(res.payload.data);
+      } else {
+        alert("게시물 불러오기에 실패하였습니다.");
+      }
+    })
   }, []);
-
   console.log(communityDtos);
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-    axios
-      .get("/board/" + inputValue)
-      .then((response) => {
-        console.log(2, inputValue);
-        setCommunityDtos(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
   return (
     <div>
@@ -208,7 +195,7 @@ const Community = ({history }) => {
               <div className="header_location">
                 <h2 className="header_text">게시글</h2>
                 <div style={{ marginRight: "24px" }}>
-                  {localStorage.getItem("info") !== null && (
+                  {localStorage.getItem("jwtToken") !== null && (
                       <Link to="/write">
                         <img
                           src={write}
@@ -224,7 +211,7 @@ const Community = ({history }) => {
                 className="content_header_sub"
               >
                 <div className="sub_search">
-                  <form onSubmit={handleOnSubmit}>
+                  <form>
                     <select className="sub_search_select">
                       <option>제목+내용</option>
                     </select>

@@ -1,4 +1,4 @@
-import {LOGIN_USER, REGISTER_USER, CHECK_USER, UPDATE_USER, Find_USER} from "./tyeps";
+import {LOGIN_USER, REGISTER_USER, CHECK_USER, UPDATE_USER, Find_USER, Board} from "./tyeps";
 import {request} from "../utils/axios";
 
 const USER_URL = "/users";
@@ -56,6 +56,22 @@ export function modify(dataToSubmit){
     const data = request("post", "/update", dataToSubmit);
     return{
         type: UPDATE_USER,
+        payload: data,
+    };
+}
+
+export function board(){
+    const data = request("get", "/board/");
+    return{
+        type: Board,
+        payload: data,
+    };
+}
+
+export function boardwrite(dataToSubmit){
+    const data = request("post", "/board/write", dataToSubmit);
+    return{
+        type: Board,
         payload: data,
     };
 }

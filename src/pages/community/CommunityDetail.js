@@ -165,6 +165,7 @@ const CommunityDetail = ({ match, history }) => {
   const id = match.params;
   const pno = id.pno;
   console.log(pno);
+
   const [resp, setResp] = useState({});
   const [postinfo, setPostInfo] = useState(0);
 

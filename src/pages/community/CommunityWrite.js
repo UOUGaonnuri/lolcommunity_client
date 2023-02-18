@@ -5,7 +5,8 @@ import NavigationBar from "../../addition/navigation-bar";
 import MainForm from "./MainForm";
 import Descript from "../../addition/Descript";
 import { withRouter } from "react-router-dom";
-import axios from "axios";
+import {boardwrite} from "../../_actions/userAction";
+import {useDispatch} from "react-redux";
 
 const WriteBox = styled.div`
   text-align: center;
@@ -89,21 +90,19 @@ const WriteBox = styled.div`
 
   .write_btn {
     display: flex;
+    text-align: center;
     justify-content: space-between;
   }
 `;
 
-
-
 const CommunityWrite = ({ history }) => {
 
-  const user= localStorage.getItem("info");
-  const info = JSON.parse(user);
-  const user_email = info[0];
+  const dispatch = useDispatch();
+
+  const user= localStorage.getItem("jwtToken");
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const storageUserId = parseInt(localStorage.getItem("userId"));
 
   const handleChangeTitle = (e) => {
     setTitle(e.target.value);
@@ -113,37 +112,25 @@ const CommunityWrite = ({ history }) => {
     setContent(e.target.value);
   };
 
-  // 이거 작성완료 누르면 데이터보내고 본진으로 가는것을 구현할 것이다
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(title);
     console.log(content);
 
-    axios
-      .post(
-        "/board/write",
-        {
-          writer: user_email,
-          title: title,
-          content: content,
-        },
-        {
-          headers: {
-            // Accept: 'application/json',
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("jwtToken"),
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response);
-
+    let body = {
+      title: title,
+      content: content,
+      writer: user,
+    }
+    dispatch(boardwrite(body)).then((res) => {
+      if(res.payload.status === 200){
+        console.log(res);
         alert("글작성이 완료되었습니다.");
         history.push("/community");
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
+      }else{
+        alert("글 작성에 실패하였습니다.");
+      }
+    })
   };
 
   return (
@@ -178,14 +165,14 @@ const CommunityWrite = ({ history }) => {
                     </div>
                     <div className="write_btn">
                       <button
-                        className="write_btn write_cancel_btn"
+                        className="write_cancel_btn"
                         type="button"
                         onClick={() => history.push("/community")}
                       >
                         취소
                       </button>
                       <button
-                        className="write_btn write_submit_btn"
+                        className="write_submit_btn"
                         type="submit"
                       >
                         작성완료
