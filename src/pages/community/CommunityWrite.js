@@ -5,7 +5,7 @@ import NavigationBar from "../../addition/navigation-bar";
 import MainForm from "./MainForm";
 import Descript from "../../addition/Descript";
 import { withRouter } from "react-router-dom";
-import {boardwrite} from "../../_actions/userAction";
+import {boardWrite} from "../../_actions/userAction";
 import {useDispatch} from "react-redux";
 
 const WriteBox = styled.div`
@@ -122,7 +122,7 @@ const CommunityWrite = ({ history }) => {
       content: content,
       writer: user,
     }
-    dispatch(boardwrite(body)).then((res) => {
+    dispatch(boardWrite(body)).then((res) => {
       if(res.payload.status === 200){
         console.log(res);
         alert("글작성이 완료되었습니다.");

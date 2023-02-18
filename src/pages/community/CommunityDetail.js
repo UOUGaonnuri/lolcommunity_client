@@ -8,8 +8,11 @@ import moment from "moment";
 import "moment/locale/ko";
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router-dom";
-import axios from "axios";
+import {boardDetail} from "../../_actions/userAction";
+import {useDispatch} from "react-redux";
 import recommend from "../../img/recommend.png"
+
+
 const CommunityContentBox = styled.div`
   width: 100%;
   text-align: left;
@@ -162,35 +165,32 @@ const CommunityContentBox = styled.div`
 `;
 
 const CommunityDetail = ({ match, history }) => {
+  const dispatch = useDispatch();
+  moment.locale("ko");
   const id = match.params;
   const pno = id.pno;
   console.log(pno);
 
   const [resp, setResp] = useState({});
-  const [postinfo, setPostInfo] = useState(0);
+  const [postinfo, setPostInfo] = useState("");
 
-  const user= localStorage.getItem("info");
-  const info = JSON.parse(user);
-  const storageinfo = (info !== null) ? (info[2]) : (null);
+  const user= localStorage.getItem("jwtToken");
+  const storageinfo = (user !== null) ? (user) : (null);
 
   useEffect(() => {
-    const enterPage = async () => {
-      moment.locale("ko");
-
-      await axios
-        .get("/board/"+pno)
-        .then((response) => {
-          setResp(response.data);
-          setPostInfo(response.data.writer);
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.log("에러", error);
-        });
-    };
-    enterPage();
+    let body = {
+      pno: pno
+    }
+    dispatch(boardDetail(body)).then((res) => {
+      if(res.payload.status === 200){
+        console.log(res);
+        setResp(res.payload.data);
+        setPostInfo(res.payload.data.token);
+      }else{
+        alert("게시물 불러오기에 실패하였습니다.");
+      }
+    })
   }, []);
-
   console.log(resp);
   return (
     <div>
