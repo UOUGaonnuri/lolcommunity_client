@@ -182,7 +182,6 @@ const Community = ({history }) => {
       }
     })
   }, []);
-  console.log(communityDtos);
 
   return (
     <div>

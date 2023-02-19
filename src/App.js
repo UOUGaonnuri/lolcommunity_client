@@ -13,21 +13,25 @@ import FindPw from "./pages/find/FindPw";
 import Community from "./pages/community/Community";
 import Write from "./pages/community/CommunityWrite";
 import CommunityDetail from "./pages/community/CommunityDetail";
+import CommunityEdit from "./pages/community/CommunityEdit";
 
 function App() {
     return (
-        <Switch>
-            <Route path="/home" component={Home} exact={true}/>
-            <Route path="/" component={Home} exact={true}/>
-            <Route path="/login" component={Login}/>
-            <Route path="/join" component={Join}/>
-            <Route path="/modify" component={Modify}/>
-            <Route path="/find" component={FindPw}/>
-            <Route path="/auth" component={ModifyAuth} />
-            <Route path="/community" component={Community} />
-            <Route path="/write" component={Write} />
-            <Route path="/:pno" component={CommunityDetail} />
-        </Switch>
+        <>
+            <Switch>
+                <Route path="/home" component={Home} exact={true}/>
+                <Route path="/" component={Home} exact={true}/>
+                <Route path="/login" component={Login}/>
+                <Route path="/join" component={Join}/>
+                <Route path="/modify" component={Modify}/>
+                <Route path="/find" component={FindPw}/>
+                <Route path="/auth" component={ModifyAuth} />
+                <Route path="/write" component={Write} />
+                <Route path="/community" component={Community} />
+                <Route path="/edit" component={CommunityEdit} />
+                <Route path="/:pno" component={CommunityDetail} />
+            </Switch>
+        </>
     );
 }
 

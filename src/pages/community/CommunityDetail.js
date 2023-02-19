@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { CommunityWrap } from "./Community";
+import CommunityReply from "./CommunityReply";
 import NavigationBar from "../../addition/navigation-bar";
 import Descript from "../../addition/Descript";
 import MainForm from "./MainForm";
@@ -8,10 +9,9 @@ import moment from "moment";
 import "moment/locale/ko";
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router-dom";
-import {boardDetail} from "../../_actions/userAction";
+import {boardDetail, boardDelete, replyWrite} from "../../_actions/userAction";
 import {useDispatch} from "react-redux";
 import recommend from "../../img/recommend.png"
-
 
 const CommunityContentBox = styled.div`
   width: 100%;
@@ -172,25 +172,54 @@ const CommunityDetail = ({ match, history }) => {
   console.log(pno);
 
   const [resp, setResp] = useState({});
-  const [postinfo, setPostInfo] = useState("");
+  const [postinfo, setPostInfo] = useState("0");
 
+  /*
   const user= localStorage.getItem("jwtToken");
   const storageinfo = (user !== null) ? (user) : (null);
+  */
+  const storageinfo = "0";
 
   useEffect(() => {
-    let body = {
-      pno: pno
-    }
-    dispatch(boardDetail(body)).then((res) => {
+    dispatch(boardDetail(pno)).then((res) => {
       if(res.payload.status === 200){
         console.log(res);
         setResp(res.payload.data);
-        setPostInfo(res.payload.data.token);
+        /*setPostInfo(res.payload.data.token);*/
       }else{
         alert("게시물 불러오기에 실패하였습니다.");
       }
     })
   }, []);
+
+  const onDeleteHandler  = () => {
+    if (window.confirm("게시글을 삭제하시겠습니까?") == true) {
+      dispatch(boardDelete(pno)).then((res) => {
+        if(res.payload.status === 200){
+          alert("삭제가 완료되었습니다.");
+          history.push("/community");
+        }else{
+          alert("삭제가 완료되지 않았습니다.");
+        }
+      })
+    }
+  };
+
+  const addReply = (reply) => {
+    let body = {
+      content: reply,
+      pno: pno,
+      writer: resp.writer,
+    }
+    dispatch(replyWrite(body)).then((res) => {
+      if(res.payload.status === 200){
+        alert("댓글 작성이 완료되었습니다.");
+      }else{
+        alert("댓글 작성에 실패하였습니다.")
+      }
+    })
+  };
+
   console.log(resp);
   return (
     <div>
@@ -236,6 +265,7 @@ const CommunityDetail = ({ match, history }) => {
                         <div className="delete_modify_btn_lo">
                           <button
                               className="delete_btn"
+                              onClick={onDeleteHandler}
                           >
                             삭제
                           </button>
@@ -245,7 +275,7 @@ const CommunityDetail = ({ match, history }) => {
                               to={{
                                 pathname: "/edit",
                                 state: {
-                                  postId: resp.pno,
+                                  pno: pno,
                                   title: resp.title,
                                   content: resp.content,
                                 },
@@ -277,6 +307,9 @@ const CommunityDetail = ({ match, history }) => {
                     </button>
                   </div>
                 </div>
+                <CommunityReply
+                    addReply={addReply}
+                />
               </div>
             </div>
             <Descript />

@@ -1,4 +1,4 @@
-import {LOGIN_USER, REGISTER_USER, CHECK_USER, UPDATE_USER, Find_USER, BOARD} from "./tyeps";
+import {LOGIN_USER, REGISTER_USER, CHECK_USER, UPDATE_USER, Find_USER, BOARD, REPLY} from "./tyeps";
 import {request} from "../utils/axios";
 
 const USER_URL = "/users";
@@ -80,6 +80,30 @@ export function boardDetail(pno){
     const data = request("get", "/board/"+pno);
     return{
         type: BOARD,
+        payload: data,
+    };
+}
+
+export function boardDelete(pno){
+    const data = request("delete", "/board/delete", pno);
+    return{
+        type: BOARD,
+        payload: data,
+    };
+}
+
+export function boardModify(pno){
+    const data = request("post", "/board/modify", pno);
+    return{
+        type: BOARD,
+        payload: data,
+    };
+}
+
+export function replyWrite(pno){
+    const data = request("post", "/reply/write", pno);
+    return{
+        type: REPLY,
         payload: data,
     };
 }

@@ -105,11 +105,11 @@ const CommunityWrite = ({ history }) => {
   const [content, setContent] = useState("");
 
   const handleChangeTitle = (e) => {
-    setTitle(e.target.value);
+    setTitle(e.currentTarget.value);
   };
 
   const handleChangeContent = (e) => {
-    setContent(e.target.value);
+    setContent(e.currentTarget.value);
   };
 
   const handleSubmit = (e) => {
