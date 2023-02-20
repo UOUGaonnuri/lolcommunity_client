@@ -10,12 +10,10 @@ const HomeMain = ({ history }) => {
 
   const handleInput = (e) => {
     setUsername(e.target.value);
-    console.log(e.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     history.push("/summoner/" + username);
   };
 

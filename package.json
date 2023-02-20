@@ -8,6 +8,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
+    "http-proxy-middleware": "^2.0.6",
     "js-cookie": "^2.2.1",
     "moment": "^2.27.0",
     "react": "^16.13.1",
@@ -47,6 +48,5 @@
   },
   "devDependencies": {
     "@types/node-fetch": "^2.6.2"
-  },
-  "proxy": "http://34.64.50.137:8080"
+  }
 }

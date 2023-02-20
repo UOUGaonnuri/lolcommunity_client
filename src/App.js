@@ -14,10 +14,12 @@ import Community from "./pages/community/Community";
 import Write from "./pages/community/CommunityWrite";
 import CommunityDetail from "./pages/community/CommunityDetail";
 import CommunityEdit from "./pages/community/CommunityEdit";
+import Summoner from "./pages/summoner/Summoner";
 
 function App() {
     return (
         <>
+
             <Switch>
                 <Route path="/home" component={Home} exact={true}/>
                 <Route path="/" component={Home} exact={true}/>
@@ -29,6 +31,7 @@ function App() {
                 <Route path="/write" component={Write} />
                 <Route path="/community" component={Community} />
                 <Route path="/edit" component={CommunityEdit} />
+                <Route path="/summoner/:summoner" component={Summoner} />
                 <Route path="/:pno" component={CommunityDetail} />
             </Switch>
         </>
