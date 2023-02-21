@@ -38,4 +38,13 @@ module.exports = function (app){
                 '^/rank': '',
             },
         }))
+    app.use(
+        '/game',
+        createProxyMiddleware({
+            target: 'https://asia.api.riotgames.com',
+            changeOrigin: true,
+            pathRewrite: {
+                '^/game': '',
+            },
+        }))
 }
