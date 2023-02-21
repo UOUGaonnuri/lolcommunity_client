@@ -31,11 +31,12 @@
     display: block;
     width: 100px;
     height: 100px;
+    border-radius: 15px;
 }
 
 .level {
     position: absolute;
-    top: 100%;
+    top: 95%;
     left: 50%;
     margin-top: -14px;
     margin-left: -22px;

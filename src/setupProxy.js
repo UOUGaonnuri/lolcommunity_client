@@ -19,4 +19,23 @@ module.exports = function (app){
                 '^/riot': '',
             },
         }))
+    app.use(
+        '/info',
+        createProxyMiddleware({
+            target: 'http://ddragon.leagueoflegends.com',
+            changeOrigin: true,
+            pathRewrite: {
+                '^/info': '',
+            },
+        }))
+
+    app.use(
+        '/rank',
+        createProxyMiddleware({
+            target: 'https://opgg-static.akamaized.net',
+            changeOrigin: true,
+            pathRewrite: {
+                '^/rank': '',
+            },
+        }))
 }
