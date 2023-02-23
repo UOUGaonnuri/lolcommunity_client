@@ -120,7 +120,7 @@ const CommunityWrite = ({ history }) => {
     let body = {
       title: title,
       content: content,
-      writer: user,
+      token: user,
     }
     dispatch(boardWrite(body)).then((res) => {
       if(res.payload.status === 200){

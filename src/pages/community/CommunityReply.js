@@ -84,6 +84,44 @@ const CommunityReply = (props) => {
                         </form>
                     </div>
                 )}
+            {props.replies.map((reply) => (
+                <div key={reply.rno} className="comment-wrap">
+                    <div
+                        data-v-0e41a35e=""
+                        className="comment-meta"
+                        style={{ marginBottom: "7px" }}
+                    >
+            <span className="comment__name" style={{ color: "black" }}>
+              {" "}
+                {reply.user.nickname}
+            </span>
+                        <span className="comment__date">
+              {moment(reply.regDate).startOf("second").fromNow()}
+            </span>
+                    </div>{" "}
+                    <div
+                        className="comment-content"
+                        style={{ fontSize: "18px", marginBottom: "8px" }}
+                    >
+                        <p>{reply.reply}</p>
+                    </div>{" "}
+                    {reply.user === storageUserId && (
+                        <div
+                            className="deleteReplyBtn"
+                            style={{ color: "red", cursor: "pointer", fontSize: "14px" }}
+                            onClick={() => {
+                                if (window.confirm("댓글을 삭제하시겠습니까?") === true) {
+                                    props.deleteReply(reply.rno);
+                                } else {
+                                    return;
+                                }
+                            }}
+                        >
+                            삭제
+                        </div>
+                    )}
+                </div>
+            ))}
         </div>
     );
 };

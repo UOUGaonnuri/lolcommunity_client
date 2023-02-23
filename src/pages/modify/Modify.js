@@ -9,12 +9,10 @@ import {useDispatch} from "react-redux";
 
 const Join = ({history}) => {
 
-    const info = localStorage.getItem("info");
-    const email = info[0];
-    const nickname = info[1];
+    const email = localStorage.getItem("email");
+    const nickname = localStorage.getItem("nick");
 
-    const [Email, setEmail] = useState(email);
-    const [Password, setPassword] = useState("");
+    const [Password, setPassword] = useState("null");
     const [NickName, setNickName] = useState(nickname);
     const dispatch = useDispatch();
 
@@ -41,17 +39,20 @@ const Join = ({history}) => {
     }
 
     const onSubmitHandler = (e) => {
+        e.preventDefault();
         let body = {
-            email: Email,
-            password: Password,
+            email: email,
             nickname: NickName,
+            password: Password,
         }
         dispatch(modify(body))
             .then((res) => {
                 if (res.payload.status === 200) {
                     alert("수정이 완료되었습니다.")
-                    localStorage.setItem("jwtToken", res.payload.token);
+                    localStorage.clear();
+                    localStorage.setItem("jwtToken", res.payload.data);
                     history.push("/home");
+
                 } else {
                     alert("수정에 실패하였습니다.");
                 }
@@ -59,19 +60,27 @@ const Join = ({history}) => {
     };
 
     const cancelHome = () => {
+        localStorage.removeItem('email');
+        localStorage.removeItem("nick");
         history.push("/home");
     };
 
     const chkRegex = () => {
         const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/
 
-        if(!passwordRegex.test(Password)){
-            alert("비밀번호 형식에 올바르지 않습니다.");
-            setPassword("");
+        if(Password !== "null"){
+            if(!passwordRegex.test(Password)){
+                alert("비밀번호 형식에 올바르지 않습니다.");
+                setPassword("mull");
+            }
         }
-        if(NickName.length < 2 || NickName.length > 8){
-            alert("닉네임 형식에 올바르지 않습니다.")
-            setNickName("");
+        if(NickName !== ""){
+            if(NickName.length < 2 || NickName.length > 8){
+                alert("닉네임 형식에 올바르지 않습니다.")
+                setNickName(nickname);
+            }
+        }else{
+            setNickName(nickname);
         }
     }
 
@@ -80,9 +89,7 @@ const Join = ({history}) => {
             <div className="modify_layout">
                 <div className="modify_layout_inside">
                     <div className="register_header">
-                        <Link to={"/home"}>
-                            <img src={lol} className="modify_layout_logo_img"/>
-                        </Link>
+                        <img src={lol} className="modify_layout_logo_img"/>
                     </div>
                     <h2 className="top_text">회원정보</h2>
                     <div className="top_sub">
@@ -95,7 +102,7 @@ const Join = ({history}) => {
                     <div>
                         <form onSubmit={onSubmitHandler}>
                             <div className="modify_input">
-                                <div className="modify_input_box_email" name="email">{Email}</div>
+                                <div className="modify_input_box_email" name="email">{email}</div>
                             </div>
                             <div>
                                 <div className="modify_input">
@@ -117,7 +124,7 @@ const Join = ({history}) => {
                                         type="text"
                                         autoComplete="off"
                                         name="nickname"
-                                        placeholder={NickName}
+                                        placeholder={nickname}
                                     />
                                 </div>
                                 <button type="submit" onClick={onChkNickHandler} className="check_btn">

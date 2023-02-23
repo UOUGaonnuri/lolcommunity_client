@@ -9,25 +9,28 @@ import lol from "../../img/lol.png";
 const Modify = ({ history }) => {
     const dispatch = useDispatch();
     const [Password, setPassword] = useState("");
-
+    const Token = localStorage.getItem("jwtToken");
     const onChangeForm = (e) => {
         setPassword(e.currentTarget.value);
     };
 
     const onSubmitHandler = (e) => {
+        e.preventDefault();
         let body = {
             password: Password,
+            token: Token,
         }
         dispatch(modifyAuth(body))
             .then((res) => {
                 if (res.payload.status === 200) {
-                    localStorage.setItem("info", res.payload.data);
+                    localStorage.setItem("email", res.payload.data.email);
+                    localStorage.setItem("nick", res.payload.data.nickname);
                     alert("인증이 완료되었습니다.");
                     history.push("/modify");
-            } else {
+                } else {
                 alert("인증에 실패하였습니다.");
-            }
-        })
+                }
+            })
     };
 
     return (

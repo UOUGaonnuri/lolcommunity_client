@@ -1,30 +1,35 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
-import { CommunityWrap } from "./Community";
+import {CommunityWrap} from "./Community";
 import NavigationBar from "../../addition/navigation-bar";
 import MainForm from "./MainForm";
 import Descript from "../../addition/Descript";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {boardModify} from "../../_actions/userAction";
 
 const WriteBox = styled.div`
   text-align: center;
   width: 100%;
+
   .article-write {
     background: rgb(255, 255, 255);
     padding: 20px 10px;
   }
+
   .article-write__title {
     text-align: left;
   }
+
   .article-write__title {
     color: rgb(30, 32, 34);
     font-weight: 700;
   }
+
   .article-write-input {
     margin-top: 16px;
   }
+
   .article-write-header {
     position: static;
     text-align: left;
@@ -32,6 +37,7 @@ const WriteBox = styled.div`
     padding-top: 8px;
     background: rgb(255, 255, 255);
   }
+
   .article-write__text {
     display: block;
     width: 100%;
@@ -46,9 +52,11 @@ const WriteBox = styled.div`
     border-image: initial;
     padding: 10px 16px 9px;
   }
+
   .article-write-content {
     width: 100%;
   }
+
   .article-write__textarea {
     font-size: 17px;
     padding: 10px;
@@ -59,6 +67,7 @@ const WriteBox = styled.div`
     resize: none;
     height: 447px;
   }
+
   .article-write__button--submit {
     margin-top: 16px;
     position: static;
@@ -71,6 +80,7 @@ const WriteBox = styled.div`
     line-height: 19px;
     font-size: 16px;
   }
+
   .article-write__button--cancel {
     margin-top: 16px;
     line-height: 19px;
@@ -82,13 +92,14 @@ const WriteBox = styled.div`
     width: 154px;
     height: 48px;
   }
+
   .article-write__btn {
     display: flex;
     justify-content: space-between;
   }
 `;
 
-const CommunityEdit = ({ history }) => {
+const CommunityEdit = ({history}) => {
     const dispatch = useDispatch();
 
     const Title = history.location.state.title;
@@ -107,16 +118,16 @@ const CommunityEdit = ({ history }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        let body ={
+        let body = {
             pno: Pno,
             title: updateTitle,
             content: updateContent,
         }
         dispatch(boardModify(body)).then((res) => {
-            if(res.payload.status === 200){
+            if (res.payload.status === 200) {
                 alert("수정 완료되었습니다.")
                 history.push(`/${Pno}`);
-            }else{
+            } else {
                 alert("수정에 실패하였습니다.")
             }
         })
@@ -126,9 +137,9 @@ const CommunityEdit = ({ history }) => {
     return (
         <div>
             <CommunityWrap>
-                <NavigationBar />
+                <NavigationBar/>
                 <div className="communityWrite-conatiner">
-                    <MainForm />
+                    <MainForm/>
                     <div>
                         <WriteBox>
                             <div className="content">
@@ -149,11 +160,11 @@ const CommunityEdit = ({ history }) => {
                                             />
                                         </div>
                                         <div className="article-write-content">
-                      <textarea
-                          onChange={handleChangeContent}
-                          className="article-write__textarea"
-                          value={updateContent}
-                      ></textarea>
+                                            <textarea
+                                                onChange={handleChangeContent}
+                                                className="article-write__textarea"
+                                                value={updateContent}
+                                            ></textarea>
                                         </div>
                                         <div className="article-write__btn">
                                             <button
@@ -175,7 +186,7 @@ const CommunityEdit = ({ history }) => {
                             </div>
                         </WriteBox>
                     </div>
-                    <Descript />
+                    <Descript/>
                 </div>
             </CommunityWrap>
         </div>

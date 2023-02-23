@@ -9,7 +9,7 @@ import moment from "moment";
 import "moment/locale/ko";
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router-dom";
-import {boardDetail, boardDelete, replyWrite} from "../../_actions/userAction";
+import {boardDetail, boardDelete, replyWrite, replyDelete} from "../../_actions/userAction";
 import {useDispatch} from "react-redux";
 import recommend from "../../img/recommend.png"
 
@@ -172,20 +172,16 @@ const CommunityDetail = ({ match, history }) => {
   console.log(pno);
 
   const [resp, setResp] = useState({});
-  const [postinfo, setPostInfo] = useState("0");
+  const [postinfo, setPostInfo] = useState("");
 
-  /*
   const user= localStorage.getItem("jwtToken");
-  const storageinfo = (user !== null) ? (user) : (null);
-  */
-  const storageinfo = "0";
+  const storageinfo = (user !== "null") ? (user) : ("null");
 
   useEffect(() => {
     dispatch(boardDetail(pno)).then((res) => {
       if(res.payload.status === 200){
-        console.log(res);
         setResp(res.payload.data);
-        /*setPostInfo(res.payload.data.token);*/
+        setPostInfo(res.payload.data.token);
       }else{
         alert("게시물 불러오기에 실패하였습니다.");
       }
@@ -209,7 +205,7 @@ const CommunityDetail = ({ match, history }) => {
     let body = {
       content: reply,
       pno: pno,
-      writer: resp.writer,
+      writer: user,
     }
     dispatch(replyWrite(body)).then((res) => {
       if(res.payload.status === 200){
@@ -220,7 +216,19 @@ const CommunityDetail = ({ match, history }) => {
     })
   };
 
-  console.log(resp);
+  const deleteReply = (reply) => {
+    if (window.confirm("게시글을 삭제하시겠습니까?") == true){
+      dispatch(replyWrite(pno)).then((res) => {
+        if(res.payload.status === 200){
+          alert("삭제가 완료되었습니다.");
+          history.push("/:pno");
+        }else{
+          alert("삭제가 완료되지 않았습니다.");
+        }
+      })
+    }
+  }
+
   return (
     <div>
       <CommunityWrap>
@@ -309,6 +317,8 @@ const CommunityDetail = ({ match, history }) => {
                 </div>
                 <CommunityReply
                     addReply={addReply}
+                    deleteReply={deleteReply}
+                    replies={resp.replies}
                 />
               </div>
             </div>

@@ -26,7 +26,7 @@ const LoginContent = ({history}) => {
         dispatch(loginUser(body))
             .then((res) => {
                 if (res.payload.status === 200) {
-                    localStorage.setItem("jwtToken", res.payload.data.email);
+                    localStorage.setItem("jwtToken", res.payload.data.token);
                     alert("로그인에 성공하였습니다.")
                     history.push("/home");
                 } else {

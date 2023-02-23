@@ -8,9 +8,9 @@ import {registerUser, checkEmail, checkNick} from "../../_actions/userAction";
 
 const Join = ({history}) => {
 
-    const [Email, setEmail] = useState("");
-    const [Password, setPassword] = useState("");
-    const [NickName, setNickName] = useState("");
+    const [Email, setEmail] = useState(null);
+    const [Password, setPassword] = useState(null);
+    const [NickName, setNickName] = useState(null);
     const dispatch = useDispatch();
 
     const onEmailHandler = (e) => {
@@ -85,15 +85,16 @@ const Join = ({history}) => {
 
         if (!emailRegex.test(Email)){
             alert("이메일 형식이 올바르지 않습니다.");
-            setEmail("");
+            setEmail(null);
         }
         if(!passwordRegex.test(Password)){
             alert("비밀번호 형식에 올바르지 않습니다.");
-            setPassword("");
+            console.log(null);
+            setPassword(null);
         }
         if(NickName.length < 2 || NickName.length > 8){
             alert("닉네임 형식에 올바르지 않습니다.")
-            setNickName("");
+            setNickName(null);
         }
     }
 

@@ -54,20 +54,21 @@ export function modifyAuth(dataToSubmit){
 }
 
 export function modify(dataToSubmit){
-    const data = request("post", back+"/update", dataToSubmit);
+    const data = request("put", back+USER_URL+"/update", dataToSubmit);
     return{
         type: UPDATE_USER,
         payload: data,
     };
 }
 
-export function board(){
-    const data = request("get", back+"/board/");
+export function board(postPage){
+    const data = request("get", back+"/board/page/"+postPage, postPage);
     return{
         type: BOARD,
         payload: data,
     };
 }
+
 
 export function boardWrite(dataToSubmit){
     const data = request("post", back+"/board/write", dataToSubmit);
@@ -93,16 +94,24 @@ export function boardDelete(pno){
     };
 }
 
-export function boardModify(pno){
-    const data = request("post", back+"/board/modify", pno);
+export function boardModify(dataToSubmit){
+    const data = request("post", back+"/board/modify/"+dataToSubmit.pno, dataToSubmit);
     return{
         type: BOARD,
         payload: data,
     };
 }
 
-export function replyWrite(pno){
-    const data = request("post", back+"/reply/write", pno);
+export function replyWrite(dataToSubmit){
+    const data = request("post", back+"/reply/"+dataToSubmit.pno+"/write", dataToSubmit);
+    return{
+        type: REPLY,
+        payload: data,
+    };
+}
+
+export function replyDelete(rno){
+    const data = request("delete", back+"/reply/delete/"+rno, rno);
     return{
         type: REPLY,
         payload: data,

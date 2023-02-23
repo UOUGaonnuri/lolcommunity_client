@@ -3,6 +3,8 @@ import NavigationBar from "../../addition/navigation-bar";
 import Descript from "../../addition/Descript";
 import write from "../../img/write.png"
 import searchicon from "../../img/searchicon.png"
+import Left from "../../img/Left.png"
+import Right from "../../img/Right.png"
 import styled from "styled-components";
 import { Link, withRouter } from "react-router-dom";
 import MainForm from "./MainForm";
@@ -164,6 +166,23 @@ const ContentBox = styled.div`
     width: 24px;
     height: 24px;
   }
+
+  .article-list-paging {
+    height: 64px;
+    background: #f8f9fa;
+  }
+  .article-list-paging__button {
+    line-height: 17px;
+    font-size: 14px;
+    color: #7b858e;
+    border-radius: 4px;
+    background-color: #fff;
+    border: 1px solid #dddfe4;
+    width: 77px;
+    height: 40px;
+    margin-top: 12px;
+  }
+  
 `;
 
 const Community = ({history }) => {
@@ -172,9 +191,11 @@ const Community = ({history }) => {
 
   const [communityDtos, setCommunityDtos] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const [statusCode, setStatusCode] = useState("");
+  const [postPage, setPostPage] = useState(0);
 
   useEffect(() => {
-    dispatch(board()).then((res) => {
+    dispatch(board(postPage)).then((res) => {
       if (res.payload.status === 200) {
         setCommunityDtos(res.payload.data);
       } else {
@@ -182,6 +203,31 @@ const Community = ({history }) => {
       }
     })
   }, []);
+
+  const handlePrevPage = () => {
+    let prevPage = postPage - 1;
+    if (postPage < 0) {
+      return;
+    }
+    dispatch(board(prevPage)).then((res) => {
+      if (res.payload.status === 200) {
+        setCommunityDtos(res.payload.data);
+      } else {
+        alert("게시물 불러오기에 실패하였습니다.");
+      }
+    })
+  };
+
+  const handleNextPage = () => {
+    let nextPage = postPage + 1;
+    dispatch(board(nextPage)).then((res) => {
+      if (res.payload.status === 200) {
+        setCommunityDtos(res.payload.data);
+      } else {
+        alert("게시물 불러오기에 실패하였습니다.");
+      }
+    })
+  };
 
   return (
     <div>
@@ -280,6 +326,57 @@ const Community = ({history }) => {
                     </div>
                 )
               })}
+              <div>
+                <div className="article-list-paging">
+                  <div>
+                    {postPage > 0 && (
+                        <div style={{ display: "inline-block" }}>
+                          <button
+                              style={{ marginRight: "6px" }}
+                              onClick={handlePrevPage}
+                              className="article-list-paging__button"
+                          >
+                            <img
+                                src={Left}
+                                alt="이전"
+                                style={{
+                                  width: "24px",
+                                  height: "24px",
+                                  verticalAlign: "middle",
+                                  cursor: "pointer",
+                                }}
+                            />
+                            이전
+                          </button>
+                        </div>
+                    )}
+
+                    {statusCode !== 204 ? (
+                        <div style={{ display: "inline-block" }}>
+                          <button
+                              style={{ marginLeft: "6px" }}
+                              onClick={handleNextPage}
+                              className="article-list-paging__button"
+                          >
+                            다음
+                            <img
+                                src={Right}
+                                alt="다음"
+                                style={{
+                                  width: "24px",
+                                  height: "24px",
+                                  verticalAlign: "middle",
+                                  cursor: "pointer",
+                                }}
+                            />
+                          </button>
+                        </div>
+                    ) : (
+                        <div></div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
             <Descript />
           </ContentBox>
