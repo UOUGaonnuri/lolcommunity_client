@@ -6,6 +6,7 @@ import "../summoner/Summoner.css";
 import {withRouter} from "react-router-dom";
 import axios from "axios";
 import defaulticon from "../../img/default.png"
+import blank from "../../img/blank.png"
 
 const SummonerHeader = styled.div`
   position: relative;
@@ -18,21 +19,25 @@ const Summoner = ({match, history}) => {
     if (match.params === null) {
         history.goBack();
     }
+
+    const [toggleId, setToggleId] = useState(0);
     const summoner = match.params.summoner;
     const [userinfo, setUserInfo] = useState([]);
     const [solo, setSolo] = useState([]);
     const [sub, setSub] = useState([]);
     const [matchid, setMatchId] = useState([]);
     const [matchcnt, setMatchCnt] = useState();
+    const [participant, setParticipant] = useState([]);
     const [user, setUser] = useState([]);
     const [games, setGames] = useState([{}]);
     const [mainRune, setMainRune] = useState();
     const [subRune, setSubRune] = useState();
+    const [winteam, setWinTeam] = useState([]);
+    const [winmember, setWinMember] = useState([]);
+    const [loseteam, setLoseTeam] = useState([]);
+    const [losemember, setLoseMember] = useState([]);
 
     const [isUpdate, setIsUpdate] = useState(false);
-    const getDetailDto = () => {
-
-    };
 
     const changeName = () => {
 
@@ -53,7 +58,7 @@ const Summoner = ({match, history}) => {
             .then((res) => {
                 if(res.data.length === 3){
                     setSolo(res.data[0]);
-                    setSub(res.data[2]);
+                    setSub(res.data[1]);
                 }else if(res.data.length === 2){
                     if((res.data[0].queueType).length === 15 && (res.data[1].queueType).length === 14 ){
                         setSolo(res.data[0]);
@@ -62,8 +67,6 @@ const Summoner = ({match, history}) => {
                         setSolo(res.data[0]);
                     }else if((res.data[0].queueType).length === 14){
                         setSub(res.data[0]);
-                    }else if((res.data[1].queueType).length === 14){
-                        setSub(res.data[1]);
                     }
                 }else if(res.data.length === 1) {
                     if ((res.data[0].queueType).length === 15) {
@@ -90,6 +93,21 @@ const Summoner = ({match, history}) => {
         axios.get("/game/lol/match/v5/matches/"+`${matchid}`+"?api_key="+`${api_key}`)
             .then((res) => {
                 setGames(res.data.info);
+                setParticipant(res.data.info.participants);
+                for(var i=0; i<5; i++){
+                    setWinMember(res.data.info.participants[i]);
+                }
+                for(var i=5; i<10; i++){
+                    setLoseMember(res.data.info.participants[i]);
+                }
+                if(res.data.info.teams[0].win === true){
+                    setWinTeam(res.data.info.teams[0]);
+                    setLoseTeam(res.data.info.teams[1]);
+                }else{
+                    setWinTeam(res.data.info.teams[1]);
+                    setLoseTeam(res.data.info.teams[0]);
+                }
+
                 for(var i = 0; i<10; i++){
                     if(res.data.info.participants && res.data.info.participants.length > 0) {
                         if(res.data.info.participants[i].puuid === userinfo.puuid){
@@ -120,7 +138,6 @@ const Summoner = ({match, history}) => {
     };
 
     const getCreation = (creation) => {
-        // Date의 프로토타입에 함수추가
         Date.prototype.yyyymmdd = function () {
             var yyyy = this.getFullYear().toString();
             var mm = (this.getMonth() + 1).toString();
@@ -233,11 +250,28 @@ const Summoner = ({match, history}) => {
         return grade + ":1 평점";
     };
 
+    const getItemImg = (itemId) => {
+        if (itemId == 0) {
+            return blank;
+        } else if (itemId !== null && itemId !== "" && itemId !== "null") {
+            return (
+                "/rank/meta/images/lol/item/" +
+                itemId +
+                ".png"
+            );
+        }
+    };
+
     const solo_rank = solo.tier || '';
     const sub_rank = sub.tier || '';
 
-    console.log(user);
+    console.log(user.item0);
+    console.log(userinfo);
     console.log(games);
+    console.log(winteam);
+    console.log(loseteam);
+    console.log(participant);
+    console.log(winmember);
 
     return (
         <>
@@ -458,8 +492,148 @@ const Summoner = ({match, history}) => {
                                                                 <div className="stateLevel">
                                                                     레벨{user.champLevel}
                                                                 </div>
+                                                                <div className="cs">
+                                                                    <span className="">
+                                                                        CS{" "}{user.totalMinionsKilled}{" "}({(user.totalMinionsKilled/(games.gameDuration/60)).toFixed(1)})
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="items">
+                                                                <div className="itemList">
+                                                                    <div className="item">
+                                                                        <img
+                                                                            src={getItemImg(user.item0)}
+                                                                            className="itemImg"
+                                                                            alt=""
+                                                                        />
+                                                                    </div>
+                                                                    <div className="item">
+                                                                        <img
+                                                                            src={getItemImg(user.item1)}
+                                                                            className="itemImg"
+                                                                            alt=""
+                                                                        />
+                                                                    </div>
+                                                                    <div className="item">
+                                                                        <img
+                                                                            src={getItemImg(user.item2)}
+                                                                            className="itemImg"
+                                                                            alt=""
+                                                                        />
+                                                                    </div>
+                                                                    <div className="item">
+                                                                        <img
+                                                                            src={getItemImg(user.item6)}
+                                                                            className="itemImg"
+                                                                            alt=""
+                                                                        />
+                                                                    </div>
+                                                                    <div className="item">
+                                                                        <img
+                                                                            src={getItemImg(user.item3)}
+                                                                            className="itemImg"
+                                                                            alt=""
+                                                                        />
+                                                                    </div>
+                                                                    <div className="item">
+                                                                        <img
+                                                                            src={getItemImg(user.item4)}
+                                                                            className="itemImg"
+                                                                            alt=""
+                                                                        />
+                                                                    </div>
+                                                                    <div className="item">
+                                                                        <img
+                                                                            src={getItemImg(user.item5)}
+                                                                            className="itemImg"
+                                                                            alt=""
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div
+                                                                className={user.win === true ? "statusBtn" : "statusBtn statusBtn-lose"}
+                                                            >
+                                                                <div className="content2">
+                                                                    <a className="btnMatchDetail">
+                                                                        <i onClick={() => {
+                                                                            if (toggleId === 0 || toggleId !== games.gameId) {
+                                                                                setToggleId(games.gameId);
+                                                                            } else {
+                                                                                setToggleId(0);
+                                                                            }}}
+                                                                           className={
+                                                                               user.win === true ? "material-icons" : "material-icons material-icons-lose"
+                                                                           }>
+                                                                            arrow_drop_down
+                                                                        </i>
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                         </div>
+                                                        {toggleId === games.gameId &&(
+                                                            <div className="GameDetail">
+                                                                <div className="MatchDetailLayout tabWrap _recognized">
+                                                                    <div className="MatchDetailHeader"></div>
+                                                                    <div className="MatchDetailContent tabItems">
+                                                                        <div
+                                                                            className="Content tabItem MatchDetailContent-overview"
+                                                                            style={{ display: "block" }}
+                                                                        >
+                                                                            <div className="GameDetailTableWrap">
+                                                                                <table className="GameDetailTable Result-WIN">
+                                                                                    <colgroup>
+                                                                                        <col className="ChampionImage" />
+                                                                                        <col className="SummonerSpell" />
+                                                                                        <col className="KeystoneMastery" />
+                                                                                        <col className="SummonerName" />
+                                                                                        {/* <col className="Tier" /> */}
+                                                                                        <col className="OPScore" />
+                                                                                        <col className="KDA" />
+                                                                                        <col className="Damage" />
+                                                                                        <col className="Ward" />
+                                                                                        <col className="CS" />
+                                                                                        <col className="Items" />
+                                                                                    </colgroup>
+                                                                                    <thead className="Header">
+                                                                                        <tr className="Row">
+                                                                                            <th
+                                                                                                className="HeaderCell"
+                                                                                                colSpan="4"
+                                                                                            >
+                                                                                                <span className="GameResult">승리{" "}</span>
+                                                                                                {winteam.teamId === 100 ? "(블루팀)" : "(레드팀)"}
+                                                                                            </th>
+                                                                                            <th className="HeaderCell"></th>
+                                                                                            <th className="HeaderCell">KDA</th>
+                                                                                            <th className="HeaderCell">피해량</th>
+                                                                                            <th className="HeaderCell">와드</th>
+                                                                                            <th className="HeaderCell">CS</th>
+                                                                                            <th className="HeaderCell">아이템</th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody className="Content">
+                                                                                        {winteam && winteam.map((participants)=>{
+                                                                                            return(
+                                                                                                <tr className={
+                                                                                                    participants.summonerName ===
+                                                                                                    userinfo.name                                                                                                  .summonerModel
+                                                                                                        ? "Row RowNowWin"
+                                                                                                        : "Row RowWin"
+                                                                                                }>
+                                                                                                    {}
+                                                                                                </tr>
+                                                                                            )
+                                                                                        })}
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>)

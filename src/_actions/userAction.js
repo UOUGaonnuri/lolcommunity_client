@@ -62,7 +62,7 @@ export function modify(dataToSubmit){
 }
 
 export function board(postPage){
-    const data = request("get", back+"/board/page/"+postPage, postPage);
+    const data = request("get", back+"/board/page?page="+postPage, postPage);
     return{
         type: BOARD,
         payload: data,

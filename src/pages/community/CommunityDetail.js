@@ -179,6 +179,7 @@ const CommunityDetail = ({ match, history }) => {
 
   useEffect(() => {
     dispatch(boardDetail(pno)).then((res) => {
+      console.log(res);
       if(res.payload.status === 200){
         setResp(res.payload.data);
         setPostInfo(res.payload.data.token);
