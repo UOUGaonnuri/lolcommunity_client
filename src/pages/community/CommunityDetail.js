@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { CommunityWrap } from "./Community";
-import CommunityReply from "./CommunityReply";
 import NavigationBar from "../../addition/navigation-bar";
 import Descript from "../../addition/Descript";
 import MainForm from "./MainForm";
@@ -9,7 +8,7 @@ import moment from "moment";
 import "moment/locale/ko";
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router-dom";
-import {boardDetail, boardDelete, replyWrite, replyDelete} from "../../_actions/userAction";
+import {boardDetail, boardDelete, replylist, replyWrite} from "../../_actions/userAction";
 import {useDispatch} from "react-redux";
 import recommend from "../../img/recommend.png"
 
@@ -169,29 +168,39 @@ const CommunityDetail = ({ match, history }) => {
   moment.locale("ko");
   const id = match.params;
   const pno = id.pno;
-  console.log(pno);
 
   const [resp, setResp] = useState({});
-  const [postinfo, setPostInfo] = useState("");
+  const [reply, setReply] = useState([]);
+  const [replies, setReplies] = useState([]);
 
-  const user= localStorage.getItem("jwtToken");
-  const storageinfo = (user !== "null") ? (user) : ("null");
+  const user= localStorage.getItem("nick");
 
   useEffect(() => {
     dispatch(boardDetail(pno)).then((res) => {
-      console.log(res);
       if(res.payload.status === 200){
         setResp(res.payload.data);
-        setPostInfo(res.payload.data.token);
       }else{
         alert("게시물 불러오기에 실패하였습니다.");
       }
     })
   }, []);
 
+
+  useEffect(()=> {
+    dispatch(replylist(resp.pno)).then((res)=> {
+      if(res.payload.status === 200){
+        setReplies(res.payload.data);
+      }
+    })
+  },[resp, reply]);
+
   const onDeleteHandler  = () => {
+    let body ={
+      writer: user,
+      pno: pno,
+    }
     if (window.confirm("게시글을 삭제하시겠습니까?") == true) {
-      dispatch(boardDelete(pno)).then((res) => {
+      dispatch(boardDelete(body)).then((res) => {
         if(res.payload.status === 200){
           alert("삭제가 완료되었습니다.");
           history.push("/community");
@@ -202,13 +211,19 @@ const CommunityDetail = ({ match, history }) => {
     }
   };
 
-  const addReply = (reply) => {
+  const replyOnChange = (e) => {
+    setReply(e.target.value);
+  };
+
+
+  const addReply = (content) => {
     let body = {
-      content: reply,
-      pno: pno,
+      content: content,
+      pno: resp.pno,
       writer: user,
     }
     dispatch(replyWrite(body)).then((res) => {
+        console.log(body);
       if(res.payload.status === 200){
         alert("댓글 작성이 완료되었습니다.");
       }else{
@@ -217,18 +232,11 @@ const CommunityDetail = ({ match, history }) => {
     })
   };
 
-  const deleteReply = (reply) => {
-    if (window.confirm("게시글을 삭제하시겠습니까?") == true){
-      dispatch(replyWrite(pno)).then((res) => {
-        if(res.payload.status === 200){
-          alert("삭제가 완료되었습니다.");
-          history.push("/:pno");
-        }else{
-          alert("삭제가 완료되지 않았습니다.");
-        }
-      })
-    }
-  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addReply(reply);
+      setReply("");
+  };
 
   return (
     <div>
@@ -268,8 +276,7 @@ const CommunityDetail = ({ match, history }) => {
                       </div>
                     </div>
                   </div>
-
-                  {postinfo === storageinfo && (
+                  {resp.writer === user && (
                       <div className="delete_modify_btn">
                         <div className="delete_modify_btn_lo">
                           <button
@@ -316,11 +323,105 @@ const CommunityDetail = ({ match, history }) => {
                     </button>
                   </div>
                 </div>
-                <CommunityReply
-                    addReply={addReply}
-                    deleteReply={deleteReply}
-                    replies={resp.replies}
-                />
+                <div className="comment">
+                  <div
+                      style={{
+                        paddingTop: "5px",
+                        marginTop: "9px",
+                        marginLeft: "1%",
+                        lineHeight: "21px",
+                        fontSize: "20px",
+                        color: "#1e2022",
+                        fontWeight: "bold",
+                      }}
+                  >
+                    댓글
+                  </div>
+                  <div>
+                    <form
+                        onSubmit={handleSubmit}
+                        style={{paddingBottom: "15px", paddingTop: "15px"}}
+                    >
+                      <input
+                          style={{
+                            display: "inline-block",
+                            width: "88%",
+                            backgroundColor: "#fff",
+                            border: "1px solid #dddfe4",
+                            overflow: "hidden",
+                            overflowWrap: "break-word",
+                            marginLeft: "1%",
+                            height: "44px",
+                          }}
+                          id="input1"
+                          type="text"
+                          onChange={replyOnChange}
+                          value={reply}
+                          className="text"
+                          placeholder="주제와 무관한 댓글, 타인의 권리를 침해하거나 명예를 훼손하는 게시물은 별도의 통보 없이 제재를 받을 수 있습니다."
+                      />
+                      <button
+                          type="submit"
+                          style={{
+                            display: "inline-block",
+                            width: "92px",
+                            padding: "10px 9px",
+                            lineHeight: "20px",
+                            fontSize: "16px",
+                            borderRadius: "0",
+                            borderColor: "#46cfa7",
+                            backgroundColor: "#46cfa7",
+                            marginLeft: "8px",
+                            color: "#fff",
+                          }}
+                      >
+                        작성
+                      </button>
+                    </form>
+                  </div>
+                  {replies.map((replies) => (
+                      <div key={replies.rno} className="comment-wrap">
+                        <div
+                            data-v-0e41a35e=""
+                            className="comment-meta"
+                            style={{marginBottom: "7px"}}
+                        >
+                        <span className="comment__name" style={{
+                            marginLeft: "1%",
+                            fontSize: "20px",
+                            color: "#1e2022"}}>
+                            {" "}
+                          {replies.writer}
+                        </span>
+                          <span className="comment__date">
+                            {" "}{moment(replies.regDate).startOf("second").fromNow()}
+                        </span>
+                        </div>
+                        {" "}
+                        <div
+                            className="comment-content"
+                            style={{fontSize: "18px", marginBottom: "8px", marginLeft: "1%"}}
+                        >
+                          <p>{replies.content}</p>
+                        </div>
+                        {" "}
+                        {replies.writer === user && (
+                            <div
+                                className="deleteReplyBtn"
+                                style={{color: "red", cursor: "pointer", fontSize: "14px"}}
+                                onClick={() => {
+                                  if (window.confirm("댓글을 삭제하시겠습니까?") === true) {
+                                  } else {
+                                    return;
+                                  }
+                                }}
+                            >
+                              삭제
+                            </div>
+                        )}
+                      </div>
+                  ))}
+                </div>
               </div>
             </div>
             <Descript />

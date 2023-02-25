@@ -86,8 +86,8 @@ export function boardDetail(pno){
     };
 }
 
-export function boardDelete(pno){
-    const data = request("delete", back+"/board/delete", pno);
+export function boardDelete(dataTosubmit){
+    const data = request("delete", back+"/board/delete/"+dataTosubmit.pno, dataTosubmit);
     return{
         type: BOARD,
         payload: data,
@@ -95,15 +95,23 @@ export function boardDelete(pno){
 }
 
 export function boardModify(dataToSubmit){
-    const data = request("post", back+"/board/modify/"+dataToSubmit.pno, dataToSubmit);
+    const data = request("put", back+"/board/modify/", dataToSubmit);
     return{
         type: BOARD,
         payload: data,
     };
 }
 
+export function replylist(pno){
+    const data = request("get", back+"/reply/"+pno, pno);
+    return{
+        type: REPLY,
+        payload: data,
+    };
+}
+
 export function replyWrite(dataToSubmit){
-    const data = request("post", back+"/reply/"+dataToSubmit.pno+"/write", dataToSubmit);
+    const data = request("post", back+"/reply/write/"+dataToSubmit.pno, dataToSubmit);
     return{
         type: REPLY,
         payload: data,
