@@ -24,7 +24,6 @@ const Modify = ({ history }) => {
             .then((res) => {
                 if (res.payload.status === 200) {
                     localStorage.setItem("email", res.payload.data.email);
-                    localStorage.setItem("nick", res.payload.data.nickname);
                     alert("인증이 완료되었습니다.");
                     history.push("/modify");
                 } else {

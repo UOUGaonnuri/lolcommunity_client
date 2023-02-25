@@ -119,9 +119,9 @@ const CommunityEdit = ({history}) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         let body = {
+            content: updateContent,
             pno: Pno,
             title: updateTitle,
-            content: updateContent,
         }
         dispatch(boardModify(body)).then((res) => {
             if (res.payload.status === 200) {

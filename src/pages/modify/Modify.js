@@ -51,6 +51,7 @@ const Join = ({history}) => {
                     alert("수정이 완료되었습니다.")
                     localStorage.clear();
                     localStorage.setItem("jwtToken", res.payload.data);
+                    localStorage.setItem("nick", res.payload.nickname);
                     history.push("/home");
 
                 } else {
@@ -61,7 +62,6 @@ const Join = ({history}) => {
 
     const cancelHome = () => {
         localStorage.removeItem('email');
-        localStorage.removeItem("nick");
         history.push("/home");
     };
 
