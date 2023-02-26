@@ -118,8 +118,8 @@ export function replyWrite(dataToSubmit){
     };
 }
 
-export function replyDelete(rno){
-    const data = request("delete", back+"/reply/delete/"+rno, rno);
+export function replyDelete(dataToSubmit){
+    const data = request("delete", back+"/reply/delete/"+dataToSubmit.rno, dataToSubmit);
     return{
         type: REPLY,
         payload: data,
