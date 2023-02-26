@@ -6,9 +6,9 @@ import Descript from "../../addition/Descript";
 import MainForm from "./MainForm";
 import moment from "moment";
 import "moment/locale/ko";
-import { Link } from "react-router-dom";
-import { withRouter } from "react-router-dom";
-import {boardDetail, boardDelete, replylist, replyWrite} from "../../_actions/userAction";
+import { Link} from "react-router-dom";
+import { withRouter, useLocation } from "react-router-dom";
+import {boardDetail, boardDelete, replylist, replyWrite, replyDelete} from "../../_actions/userAction";
 import {useDispatch} from "react-redux";
 import recommend from "../../img/recommend.png"
 
@@ -165,6 +165,7 @@ const CommunityContentBox = styled.div`
 
 const CommunityDetail = ({ match, history }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
   moment.locale("ko");
   const id = match.params;
   const pno = id.pno;
@@ -231,6 +232,22 @@ const CommunityDetail = ({ match, history }) => {
       }
     })
   };
+
+    const deleteReply = (replies) => {
+        let body = {
+            rno: replies.rno,
+            writer: user,
+        }
+        dispatch(replyDelete(body)).then((res) => {
+            console.log(body);
+            if(res.payload.status === 200){
+                alert("댓글이 삭제 되었습니다.");
+                window.location.reload();
+            }else{
+                alert("실패하였습니다..")
+            }
+        })
+    };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -408,15 +425,17 @@ const CommunityDetail = ({ match, history }) => {
                         {replies.writer === user && (
                             <div
                                 className="deleteReplyBtn"
-                                style={{color: "red", cursor: "pointer", fontSize: "14px"}}
+                                style={{color: "red", cursor: "pointer", fontSize: "14px", marginLeft: "1%"}}
                                 onClick={() => {
                                   if (window.confirm("댓글을 삭제하시겠습니까?") === true) {
+                                      deleteReply(replies);
+                                      console.log(replies);
                                   } else {
                                     return;
                                   }
                                 }}
                             >
-                              삭제
+                                삭제
                             </div>
                         )}
                       </div>
