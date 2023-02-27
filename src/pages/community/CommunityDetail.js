@@ -7,7 +7,7 @@ import MainForm from "./MainForm";
 import moment from "moment";
 import "moment/locale/ko";
 import { Link} from "react-router-dom";
-import { withRouter, useLocation } from "react-router-dom";
+import { withRouter} from "react-router-dom";
 import {boardDetail, boardDelete, replylist, replyWrite, replyDelete} from "../../_actions/userAction";
 import {useDispatch} from "react-redux";
 import recommend from "../../img/recommend.png"
@@ -32,7 +32,6 @@ const CommunityContentBox = styled.div`
     text-align: left;
     line-height: 36px;
     font-size: 24px;
-    /* color: #1e2022; */
     word-wrap: break-word;
     word-break: break-all;
     overflow: auto;
@@ -92,8 +91,6 @@ const CommunityContentBox = styled.div`
     color: #1e2022;
   }
 
-  /*화살표 이미지*/
-
   .recommend_arrow {
     width: 16px;
     height: 16px;
@@ -107,8 +104,6 @@ const CommunityContentBox = styled.div`
     margin-top: 1px;
     transition: all 0.5s;
   }
-
-  /*추천 숫자*/
 
   .recommend_count {
     transition: all 0.3s;
@@ -161,11 +156,53 @@ const CommunityContentBox = styled.div`
     color: black;
     box-sizing: border-box;
   }
+
+  .reply {
+    position: relative;
+    padding: 10px;
+  }
+  
+  .comment_meta {
+    line-height: 17px;
+    font-size: 14px;
+    color: #7b858e;
+  }
+
+  .comment_content {
+    line-height: 20px;
+    font-size: 15px;
+    color: #1e2022;
+    margin-bottom: 10px;
+    margin-top: 10px;
+  }
+
+  .reply_wrap {
+    margin-bottom: 8px;
+    background-color: #f8fafa;
+    -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  }
+  
+  .comment_date {
+    margin-left: 19px;
+  }
+  .comment_writer {
+    font-weight: 700;
+    color: #1e2022;
+  }
+
+  .comment-vote {
+    position: absolute;
+    left: 0;
+    top: 36px;
+    width: 64px;
+    text-align: center;
+  }
+  
 `;
 
 const CommunityDetail = ({ match, history }) => {
   const dispatch = useDispatch();
-  const location = useLocation();
   moment.locale("ko");
   const id = match.params;
   const pno = id.pno;
@@ -283,10 +320,7 @@ const CommunityDetail = ({ match, history }) => {
                     </div>
                     <div className="detail_list detail_list_right">
                       <div className="detail_content">
-                        <span>조회 {resp.data}</span>
-                      </div>
-                      <div className="detail_content">
-                        <span>댓글 {resp.data}</span>
+                        <span>댓글 {replies.length}</span>
                       </div>
                       <div className="detail_content">
                         <span>추천 {resp.data}</span>
@@ -340,7 +374,7 @@ const CommunityDetail = ({ match, history }) => {
                     </button>
                   </div>
                 </div>
-                <div className="comment">
+                <div className="reply">
                   <div
                       style={{
                         paddingTop: "5px",
@@ -397,26 +431,26 @@ const CommunityDetail = ({ match, history }) => {
                     </form>
                   </div>
                   {replies.map((replies) => (
-                      <div key={replies.rno} className="comment-wrap">
+                      <div key={replies.rno} className="reply_wrap">
                         <div
                             data-v-0e41a35e=""
-                            className="comment-meta"
+                            className="reply_meta"
                             style={{marginBottom: "7px"}}
                         >
-                        <span className="comment__name" style={{
+                        <span className="reply_writer" style={{
                             marginLeft: "1%",
                             fontSize: "20px",
                             color: "#1e2022"}}>
                             {" "}
                           {replies.writer}
                         </span>
-                          <span className="comment__date">
+                          <span className="reply_date">
                             {" "}{moment(replies.regDate).startOf("second").fromNow()}
                         </span>
                         </div>
                         {" "}
                         <div
-                            className="comment-content"
+                            className="reply_content"
                             style={{fontSize: "18px", marginBottom: "8px", marginLeft: "1%"}}
                         >
                           <p>{replies.content}</p>

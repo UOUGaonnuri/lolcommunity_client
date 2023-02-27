@@ -106,38 +106,40 @@ const Summoner = ({match, history}) => {
     }, [userinfo]);
 
     useEffect(() => {
-        for(var j=0; j<1; j++){
-            axios.get("/game/lol/match/v5/matches/" + `${matchid[j]}` + "?api_key=" + `${api_key}`)
-                .then((res) => {
-                    setGames(res.data.info);
+        axios.get("/game/lol/match/v5/matches/" + `${matchid}` + "?api_key=" + `${api_key}`)
+            .then((res) => {
+                setGames(res.data.info);
+                if(winmember.length<5){
                     for (var i = 0; i < 5; i++) {
                         setWinMember(winmember => [...winmember, res.data.info.participants[i]]);
                     }
+                }
+                if(losemember.length<5){
                     for (var i = 5; i < 10; i++) {
                         setLoseMember(losemember => [...losemember, res.data.info.participants[i]]);
                     }
-                    if (res.data.info.teams[0].win === true) {
-                        setWinTeam(res.data.info.teams[0]);
-                        setLoseTeam(res.data.info.teams[1]);
-                    } else {
-                        setWinTeam(res.data.info.teams[1]);
-                        setLoseTeam(res.data.info.teams[0]);
-                    }
+                }
+                if (res.data.info.teams[0].win === true) {
+                    setWinTeam(res.data.info.teams[0]);
+                    setLoseTeam(res.data.info.teams[1]);
+                } else {
+                    setWinTeam(res.data.info.teams[1]);
+                    setLoseTeam(res.data.info.teams[0]);
+                }
 
-                    for (var i = 0; i < 10; i++) {
-                        if (res.data.info.participants && res.data.info.participants.length > 0) {
-                            if (res.data.info.participants[i].puuid === userinfo.puuid) {
-                                setUser(res.data.info.participants[i]);
-                                setMainRune(res.data.info.participants[i].perks.styles[0].selections[0].perk);
-                                setSubRune(res.data.info.participants[i].perks.styles[1].style);
-                            }
+                for (var i = 0; i < 10; i++) {
+                    if (res.data.info.participants && res.data.info.participants.length > 0) {
+                        if (res.data.info.participants[i].puuid === userinfo.puuid) {
+                            setUser(res.data.info.participants[i]);
+                            setMainRune(res.data.info.participants[i].perks.styles[0].selections[0].perk);
+                            setSubRune(res.data.info.participants[i].perks.styles[1].style);
                         }
                     }
-                })
-                .catch((err) => {
-                    console.log(err);
-                })
-        }
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     }, [matchid]);
 
     const updateInfo = (summonerName) => {
@@ -302,11 +304,6 @@ const Summoner = ({match, history}) => {
 
     const solo_rank = solo.tier || '';
     const sub_rank = sub.tier || '';
-
-    console.log(userinfo);
-    console.log(games);
-    console.log(winmember);
-    console.log(matchid);
 
     return (
         <>
