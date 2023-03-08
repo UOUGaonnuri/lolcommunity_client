@@ -65,7 +65,7 @@ const WriteBox = styled.div`
     border: 1px solid rgb(221, 223, 228);
     color: rgb(30, 32, 34);
     resize: none;
-    height: 447px;
+    height: 350px;
   }
 
   .article-write__button--submit {

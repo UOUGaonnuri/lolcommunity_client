@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from "react";
 import NavigationBar from "../../addition/navigation-bar";
-import Descript from "../../addition/Descript";
 import write from "../../img/write.png"
 import searchicon from "../../img/searchicon.png"
 import Left from "../../img/Left.png"
@@ -424,7 +423,6 @@ const Community = ({history}) => {
                                 </div>
                             </div>
                         </div>
-                        <Descript/>
                     </ContentBox>
                 </div>
             </CommunityWrap>
