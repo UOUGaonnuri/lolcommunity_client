@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import "./FindPw.css";
-import axios from "axios";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
 import {useDispatch} from "react-redux";
